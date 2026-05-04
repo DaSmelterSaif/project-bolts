@@ -1,0 +1,5 @@
+{
+    "baseKickoffVelocity": 200,
+    "kickoffAcceleration": 1000,
+    "maintainedMomentumAcceleration": 200
+}

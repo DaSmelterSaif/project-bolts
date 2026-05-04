@@ -1,0 +1,34 @@
+{
+  "guide": {
+    "purpose": "Starter guide for a Phaser tilemap workflow.",
+    "howThisWorks": [
+      "The real map JSON should be exported from Tiled, not hand-written.",
+      "The tileset PNG contains the actual art; the JSON contains where each tile goes.",
+      "In Phaser, load the JSON with tilemapTiledJSON and create a layer from it.",
+      "Use a static tile layer for collision, and keep the player as a dynamic Arcade body."
+    ],
+    "pngSetup": [
+      "Make one combined PNG tileset that holds all tile variants.",
+      "Keep every tile the same size, for example 16x16 or 32x32.",
+      "Place the tiles in a clean grid with no overlap or rotation.",
+      "Use a transparent PNG so empty pixels stay transparent.",
+      "For pixel art, keep the source image at native resolution and let Phaser scale it by whole numbers."
+    ],
+    "pngOrder": [
+      "Arrange tiles left-to-right, then top-to-bottom.",
+      "Keep that order consistent with the tile IDs you use in Tiled.",
+      "Example: the first tile in the PNG should be the first tile index in the map data.",
+      "If you later add more tiles, append them in the same grid order instead of reshuffling the existing ones."
+    ],
+    "recommendedFiles": [
+      "public/assets/tilemaps/tiles/fantasy-tiles.png",
+      "public/assets/tilemaps/maps/level.json"
+    ]
+  },
+  "tilemapNotes": {
+    "layerName": "Tile Layer 1",
+    "tilesetNameInTiled": "fantasy-tiles",
+    "tilesetNameInPhaser": "fantasy-tiles",
+    "collisionSetup": "In the starter code, every non-empty tile collides via setCollisionByExclusion([-1])."
+  }
+}
