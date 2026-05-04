@@ -9,3 +9,11 @@ const PlayerConfigSchema = z.object({
     kickoffAcceleration: z.number(),
     maintainedMomentumAcceleration: z.number(),
 });
+
+const MovementConfigSchema = PlayerConfigSchema.pick({
+    baseKickoffVelocity: true,
+    kickoffAcceleration: true,
+    maintainedMomentumAcceleration: true,
+});
+
+export type MovementConfig = z.infer<typeof MovementConfigSchema>;

@@ -1,42 +1,11 @@
 import Phaser from "phaser";
 
-import playerConfig from "../config/player-config.json";
+import { MovementConfig } from "../config/schema";
 
-//// To be replaced by schema.ts
-type MovementConfig = {
-    baseKickoffVelocity: number;
-    kickoffAcceleration: number;
-    maintainedMomentumAcceleration: number;
-};
+// const movementConfig =
 
-// TODO - Make a generic function that deals with incorrect config imports
-function readMovementConfig(config: typeof playerConfig): MovementConfig {
-    const baseKickoffVelocity = Number(config.baseKickoffVelocity);
-    const kickoffAcceleration = Number(config.kickoffAcceleration);
-    const maintainedMomentumAcceleration = Number(
-        config.maintainedMomentumAcceleration,
-    );
-
-    if (
-        !Number.isFinite(baseKickoffVelocity) ||
-        !Number.isFinite(kickoffAcceleration) ||
-        !Number.isFinite(maintainedMomentumAcceleration)
-    ) {
-        throw new Error(
-            "player-config.json must contain numeric movement values.",
-        );
-    }
-
-    return {
-        baseKickoffVelocity,
-        kickoffAcceleration,
-        maintainedMomentumAcceleration,
-    };
-}
-////
-
-const movementConfig = readMovementConfig(playerConfig);
-
+// TODO - Fix movement config
+// TODO - Choose how to import config files
 export class BoltsCharacter extends Phaser.Physics.Arcade.Sprite {
     // Reads the key state and converts it into this character's movement intent.
     public handleKeybinds(
