@@ -1,5 +1,8 @@
 {
-    "baseKickoffVelocity": 200,
-    "kickoffAcceleration": 1000,
-    "maintainedMomentumAcceleration": 200
+    "movement": {
+        "baseKickoffVelocity": 200,
+        "kickoffAcceleration": 1000,
+        "maintainedMomentumAcceleration": 200,
+        "skiddingAcceleration": 2000
+    }
 }

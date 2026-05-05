@@ -1,8 +1,6 @@
 import Phaser from "phaser";
 
-import { MovementConfig } from "../config/schema";
-
-// const movementConfig =
+import { movementConfig } from "../config/schema";
 
 // TODO - Fix movement config
 // TODO - Choose how to import config files
