@@ -4,14 +4,17 @@ import { Input } from "phaser";
 
 import { EventBus } from "../EventBus";
 
+// import { BoltsCharacter } from "../Classes/BoltsCharacter";
+import { BoltsCharacterController } from "../Classes/BoltsCharacter";
+
 export class MainMenu extends Scene {
     private map?: Phaser.Tilemaps.Tilemap;
     private groundLayer?:
         | Phaser.Tilemaps.TilemapLayer
         | Phaser.Tilemaps.TilemapGPULayer;
-    player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    // player: BoltsCharacter;
+    player: BoltsCharacterController;
     keys: Phaser.Types.Input.Keyboard.CursorKeys | any;
-    playerBody: Phaser.Physics.Arcade.Body;
 
     constructor() {
         super("MainMenu");
@@ -59,21 +62,10 @@ export class MainMenu extends Scene {
         // Keep the physics world aligned with the visible game area.
         this.physics.world.setBounds(0, 0, this.scale.width, this.scale.height);
 
-        // The player is a dynamic body, so gravity and collisions will affect it.
-        this.player = this.physics.add
-            .sprite(50, 350, "mainCharacter")
-            .setScale(2);
-
-        this.playerBody = this.player.body as Phaser.Physics.Arcade.Body;
-
-        this.player.setCollideWorldBounds(true);
-
-        this.player.setDamping(true);
-        this.player.setDragX(0.7);
-        this.player.setMaxVelocity(500);
-
-        // Collide the player against the tile layer, not against individual static images.
-        this.physics.add.collider(this.player, this.groundLayer);
+        // The player is now a reusable gameplay object instead of a bare sprite.
+        // this.player = new BoltsCharacter(this, 50, 350, "mainCharacter");
+        // this.add.existing(this.player);
+        // this.physics.add.existing(this.player);
 
         this.keys = this.input.keyboard?.addKeys({
             up: Input.Keyboard.KeyCodes.W,
@@ -82,60 +74,31 @@ export class MainMenu extends Scene {
             right: Input.Keyboard.KeyCodes.D,
         });
 
-        // OLD CODE: manual static-image level building.
-        // This is the previous approach you had before switching to a tilemap.
-        /*
-        this.platform1 = this.add
-            .tileSprite(0, 480, 704, 32, "groundTile")
-            .setOrigin(0, 1);
+        this.player = new BoltsCharacterController(
+            this,
+            50,
+            350,
+            "mainCharacter",
+            this.keys,
+            32,
+            48,
+        );
 
-        this.platform1.setScale(2, 2);
+        // this.player.setScale(2);
+        // this.player.setCollideWorldBounds(true);
 
-        this.physics.add.existing(this.platform1, true);
+        // this.player.setDamping(true);
+        // this.player.setDragX(0.7);
+        // this.player.setMaxVelocity(500);
 
-        this.player = this.physics.add
-            .sprite(50, 350, "mainCharacter")
-            .setScale(2);
-
-        this.physics.add.collider(this.player, this.platform1);
-
-        // Or, if you prefer a looped layout:
-        for (const platformDefinition of level.platforms) {
-            const platform = this.physics.add.staticImage(
-                platformDefinition.x,
-                platformDefinition.y,
-                platformDefinition.key,
-            );
-
-            platform.setOrigin(0, 1);
-            platform.setScale(platformDefinition.scaleX ?? 2, platformDefinition.scaleY ?? 2);
-            platform.refreshBody();
-
-            this.platforms.push(platform);
-        }
-        */
+        // Collide the player against the tile layer, not against individual static images.
+        // this.physics.add.collider(this.player, this.groundLayer);
 
         EventBus.emit("current-scene-ready", this);
     }
 
     update() {
-        try {
-            if (this.keys.right.isDown) {
-                this.player.setAccelerationX(this.newAccelerationAbs());
-            } else if (this.keys.left.isDown) {
-                this.player.setAccelerationX(-this.newAccelerationAbs());
-            } else {
-                this.player.setAccelerationX(0);
-            }
-        } catch (e) {
-            console.error("Something went wrong with the keybinds.");
-        }
-    }
-    newAccelerationAbs() {
-        if (Math.abs(this.playerBody.velocity.x) < 200) {
-            return 1000;
-        } else {
-            return 200;
-        }
+        // const direction = this.player.handleKeybinds(this.keys);
+        // this.player.applyHorizontalMovement(direction);
     }
 }
