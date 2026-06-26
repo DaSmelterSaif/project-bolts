@@ -80,9 +80,9 @@ export class MainMenu extends Scene {
             350,
             "mainCharacter",
             this.keys,
-            32,
-            48,
+            2,
         );
+        this.player.sweptRectVisible = true;
 
         // this.player.setScale(2);
         // this.player.setCollideWorldBounds(true);
@@ -100,5 +100,6 @@ export class MainMenu extends Scene {
     update() {
         // const direction = this.player.handleKeybinds(this.keys);
         // this.player.applyHorizontalMovement(direction);
+        this.player.update();
     }
 }

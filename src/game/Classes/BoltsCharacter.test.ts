@@ -6,7 +6,10 @@ vi.mock("phaser");
 function mockScene() {
     return {
         add: {
-            sprite: (x: number, y: number, texture: string) => ({
+            sprite: (_x: number, _y: number, _texture: string) => ({
+                displayWidth: 32,
+                displayHeight: 48,
+                setOrigin: (_: number, __: number) => {},
                 setScale: (_: number) => {},
             }),
         },
@@ -24,8 +27,7 @@ test("getSweptRect - rectangle size when vel=0", () => {
         350,
         "mainCharacter",
         {},
-        32,
-        48,
+        2,
     );
 
     const rect = (c as any).getSweptRect(1 / 60);
@@ -51,8 +53,7 @@ test("getSweptRect - moving right expands rectangle to the right", () => {
         y,
         "mainCharacter",
         {},
-        width,
-        height,
+        2,
     );
 
     c.velx = velocityX;

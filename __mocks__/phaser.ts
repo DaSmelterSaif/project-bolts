@@ -1,3 +1,4 @@
+// Made to avoid running the Phaser library in the Node environment.
 class Rectangle {
     x: number;
     y: number;

@@ -10,10 +10,17 @@ export class MovementBody {
 }
 
 export class BoltsCharacterController {
+    scene: Phaser.Scene;
     sprite: Phaser.GameObjects.Sprite;
     width: number;
     height: number;
+    /**
+     * x-coordinate of the middle of character
+     */
     x: number;
+    /**
+     * y-coordinate of the bottom of the character
+     */
     y: number;
     velx = 0;
     vely = 0;
@@ -22,26 +29,44 @@ export class BoltsCharacterController {
     gravityX: number;
     gravityY: number;
     keys: any;
+    public sweptRectVisible = false;
+    private sweptRectGraphics: Phaser.GameObjects.Graphics;
     constructor(
         scene: Phaser.Scene,
         x: number,
         y: number,
         texture: string,
         keys: any,
-        width: number,
-        height: number,
+        scale: number, // Integer
     ) {
-        this.sprite = scene.add.sprite(x, y, texture).setScale(2);
+        this.scene = scene;
+        // Assume texture exists.
+        const scaleInt = Math.round(scale);
+
+        this.sprite = scene.add.sprite(x, y, texture);
+        this.sprite.setOrigin(0.5, 1);
+        this.sprite.setScale(scaleInt);
+
+        const inferredWidth = this.sprite.displayWidth;
+        const inferredHeight = this.sprite.displayHeight;
+
+        this.width = inferredWidth;
+        this.height = inferredHeight;
+        this.x = x;
+        this.y = y;
+
+        this.sweptRectGraphics = scene.add.graphics();
         this.gravityX = scene.physics.world.gravity.x;
         this.gravityY = scene.physics.world.gravity.y;
         this.keys = keys;
-
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
     }
 
+    /**
+     * Handles keybinds to control character
+     *
+     * @param keys
+     * @returns
+     */
     public handleKeybinds(
         keys: Phaser.Types.Input.Keyboard.CursorKeys | any,
     ): number {
@@ -60,7 +85,12 @@ export class BoltsCharacterController {
         this.accX = value;
     }
 
-    // Applies acceleration based on the already-decided movement intent.
+    /**
+     * Applies acceleration based on the already-decided movement intent.
+     *
+     * @param direction
+     * @returns
+     */
     public applyHorizontalMovement(direction: number): void {
         const body = this.sprite.body as Phaser.Physics.Arcade.Body | null;
 
@@ -77,7 +107,12 @@ export class BoltsCharacterController {
         }
     }
 
-    // Switch to a lower acceleration once the character is already moving fast enough.
+    /**
+     * Switch to a lower acceleration once the character is already moving fast enough.
+     *
+     * @param body
+     * @returns
+     */
     private newAccelerationAbs(body: Phaser.Physics.Arcade.Body): number {
         if (Math.abs(body.velocity.x) < movementConfig.baseKickoffVelocity) {
             return movementConfig.kickoffAcceleration;
@@ -90,10 +125,36 @@ export class BoltsCharacterController {
 
     public update() {
         this.updateMovement();
+        this.sweptRectGraphics.setVisible(this.sweptRectVisible);
+        this.renderSweptRect();
     }
 
-    // Used to avoid clipping when moving the character
     /**
+     * Used to draw the swept rectangle for debugging
+     *
+     * @returns {void}
+     */
+    private renderSweptRect(): void {
+        if (!this.sweptRectVisible) {
+            this.sweptRectGraphics.clear();
+            return;
+        }
+
+        const dt = this.scene.game.loop.delta / 1000;
+        const bounds = this.getSweptRect(dt);
+
+        this.sweptRectGraphics.clear();
+        this.sweptRectGraphics.lineStyle(1, 0xffffff, 1);
+        this.sweptRectGraphics.strokeRect(
+            bounds.x,
+            bounds.y,
+            bounds.width,
+            bounds.height,
+        );
+    }
+
+    /**
+     * Used to avoid clipping when moving the character
      *
      * @param {number} dt - Delta T (frametime)
      * @returns {Phaser.Geom.Rectangle}
@@ -133,10 +194,12 @@ export class BoltsCharacterController {
     }
 }
 
-// NOTE: The following class is pending removal and is
-// to be replaced with the code above.
 // TODO - Fix movement config
 // TODO - Choose how to import config files
+/**
+ * NOTE: This class is pending removal and is
+ * to be replaced with BoltsCharacterController.
+ */
 export class BoltsCharacter extends Phaser.Physics.Arcade.Sprite {
     // Reads the key state and converts it into this character's movement intent.
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
